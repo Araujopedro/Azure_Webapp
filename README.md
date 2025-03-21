@@ -27,6 +27,12 @@ A solução é projetada para ser robusta, escalável e fácil de gerenciar, per
 ### **5. Segurança e Conformidade**
 - Com o banco de dados Oracle configurado em uma VM protegida, os dados permanecem seguros e em conformidade com regulamentações, como LGPD.
 
+
+FOTO DA SOLUÇÃO.
+![image](https://github.com/user-attachments/assets/b252812c-5e5f-4108-b0ae-db8e7bfa0490)
+
+
+
 ---
 
 ## Requisitos do Ambiente
@@ -74,16 +80,32 @@ https://github.com/VitorOnofreRamos/Challenge_Odontoprev_API.git
 - Utilize as ferramentas do Azure para publicar o projeto como um WebApp.
 - Configure a conexão com o banco de dados na VM pelo painel de administração do Azure.
 
+  ### ADD AS SEGUINTES DEPENDECIAS.
+  ASPNETCORE_ENVIRONMENT	Development
+  DOTNET_USE_POLLING_FILE_WATCHER	1
+  WEBSITE_NODE_DEFAULT_VERSION	~18
+
+
+### EXEMPLO DE ADD NO SWAGGER
+
+{
+  "nome": "felipe",
+  "data_Nascimento": "2000-03-20T23:56:13.725Z",
+  "cpf": "524.388.298-89",
+  "endereco": "rua ",
+  "telefone": "(11) 96315-1706",
+  "carteirinha": 50509
+}
+
+
+
+
 ### 4. Teste
 - Use o Swagger UI para testar os endpoints da API.
 
 ---
 
-## Próximos Passos
-1. **Implementar autenticação e autorização** para maior segurança.
-2. **Monitoramento e logs** usando ferramentas do Azure.
-3. **Documentação detalhada da API**.
-4. **Expansão para novos serviços e integrações.**
+
 
 ---
 
