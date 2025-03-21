@@ -1,0 +1,1520 @@
+set SERVEROUT on;
+
+-- Pacientes
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Paulo Silva', DATE '2000-12-12', '123.662.444-70', 'Rua Raimundico, 124', '(11) 66121-2322', 71111);
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Ana Silva', DATE '1995-05-20', '987.654.321-00', 'Av. Brasil, 456', '(11) 91234-5678', 72222);
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Carlos Souza', DATE '1988-08-30', '111.222.333-44', 'Rua das Flores, 78', '(21) 99876-5432', 73333);
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Fernanda Lima', DATE '1992-03-15', '222.333.444-55', 'Pça da Liberdade, 9', '(31) 93333-4444', 74444);
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Ricardo Oliveira', DATE '1985-11-10', '333.444.555-66', 'Rua dos Navegantes, 21', '(41) 94444-5555', 75555);
+-- Pacientes sem Consulta atribuida
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('João da Silva', DATE '1990-05-20', '123.456.789-01', 'Rua Almirante Prata, 123', '(11) 98888-7777', 10001);
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Maria Oliveira', DATE '1985-10-15', '234.567.890-12', 'Av. Bolacha, 34', '(11) 97777-6666', 10002);
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Carlos Souza', DATE '1992-03-10', '345.678.901-23', 'Rua Continente Novo, 789', '(11) 96666-5555', 10003);
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Ana Ferreira', DATE '1978-07-22', '456.789.012-34', 'Rua Dr Rocha, 101', '(11) 95555-4444', 10004);
+EXECUTE pkg_procedures_crud_odontoprev.Insert_PACIENTE('Pedro Martins', DATE '2000-01-05', '567.890.123-45', 'Rua Excelência, 202', '(11) 94444-3333', 10005);
+
+-- Dentistas
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dr. Martin Campos', 'CRO-13322', 'IMPLANTODONTIA', '(11) 1551-1491');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dr. João Barro', 'CRO-14444', 'ORTODONTIA', '(11) 1234-5678');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dra. Luciana da Silva', 'CRO-15555', 'ENDODONTIA', '(21) 8765-4321');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dr. Pedro Henrique', 'CRO-16666', 'CIRURGIA', '(31) 9876-5432');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dra. Mariana Bezerra', 'CRO-17777', 'ODONTOLOGIA ESTÉTICA', '(41) 9999-8888');
+-- Dentistas sem Consulta atribuida
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dr. Eduardo Lima', 'CRO-12345', 'Ortodontia', '(11) 91234-5678');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dra. Juliana Souza', 'CRO-23456', 'Endodontia', '(11) 92345-6789');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dr. Marcos Santos', 'CRO-34567', 'Cirurgia', '(11) 93456-7890');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dra. Paula Fernandes', 'CRO-45678', 'Implantodontia', '(11) 94567-8901');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Dentista('Dr. Ricardo Almeida', 'CRO-56789', 'Periodontia', '(11) 95678-9012');
+
+-- Consultas
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Consulta(TIMESTAMP '2024-10-24 12:30:00', 1, 2, 'cancelada');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Consulta(TIMESTAMP '2024-10-25 09:00:00', 2, 1, 'CONCLUIDA')
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Consulta(TIMESTAMP '2024-10-26 10:00:00', 1, 3, 'agendada');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Consulta(TIMESTAMP '2024-10-27 14:30:00', 2, 3, 'concluida');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Consulta(TIMESTAMP '2024-10-28 16:00:00', 3, 1, 'cancelada');
+
+-- Histórico de Consultas
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Historico_Consulta(1, TIMESTAMP '2024-10-24 12:30:00', 'Reconstrução', 'Paciente orientado sobre cuidados diários.');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Historico_Consulta(2, TIMESTAMP '2024-10-25 09:30:00', 'Consulta de rotina', 'Paciente retornou bem.');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Historico_Consulta(3, TIMESTAMP '2024-10-26 10:30:00', 'Avaliação de ortodontia', 'Pacientes com aparelho.');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Historico_Consulta(4, TIMESTAMP '2024-10-27 15:00:00', 'Extração de dente', '');
+EXECUTE pkg_procedures_crud_odontoprev.Insert_Historico_Consulta(5, TIMESTAMP '2024-10-28 17:00:00', 'Consulta de emergência', 'Paciente com dor aguda.');
+
+
+
+
+
+
+
+
+
+
+
+-- Drop Project Tables
+DROP TABLE Paciente cascade constraints;
+DROP TABLE Dentista cascade constraints;
+DROP TABLE Consulta cascade constraints;
+DROP TABLE Historico_Consulta cascade constraints;
+DROP TABLE Auditoria_Odontoprev cascade constraints;
+
+-- Drop Project sequences
+DROP SEQUENCE seq_paciente;
+DROP SEQUENCE seq_dentista;
+DROP SEQUENCE seq_consulta;
+DROP SEQUENCE seq_historico;
+DROP SEQUENCE seq_auditoria;
+
+-- Create Project Tables
+CREATE TABLE Paciente (
+    ID_Paciente NUMBER(12) PRIMARY KEY,
+    Nome VARCHAR2(30) NOT NULL,
+    Data_Nascimento DATE NOT NULL,
+    CPF VARCHAR2(14) UNIQUE NOT NULL,
+    Endereco VARCHAR2(200) NOT NULL,
+    Telefone VARCHAR2(20) NOT NULL,
+    Carteirinha NUMBER(12) UNIQUE NOT NULL
+);
+
+CREATE TABLE Dentista (
+    ID_Dentista NUMBER(12) PRIMARY KEY,
+    Nome VARCHAR2(100) NOT NULL,
+    CRO VARCHAR2(20) UNIQUE NOT NULL,
+    Especialidade VARCHAR2(50) NOT NULL,
+    Telefone VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE Consulta (
+    ID_Consulta NUMBER(12) PRIMARY KEY,
+    Data_Consulta TIMESTAMP NOT NULL,
+    ID_Paciente NUMBER(12) NOT NULL,
+    ID_Dentista NUMBER(12) NOT NULL,
+    Status VARCHAR2(50) NOT NULL,
+    FOREIGN KEY (ID_Paciente) REFERENCES Paciente(ID_Paciente),
+    FOREIGN KEY (ID_Dentista) REFERENCES Dentista(ID_Dentista)
+);
+
+CREATE TABLE Historico_Consulta (
+    ID_Historico NUMBER(12) PRIMARY KEY,
+    ID_Consulta NUMBER(12) NOT NULL,
+    Data_Atendimento TIMESTAMP NOT NULL,
+    Motivo_Consulta VARCHAR2(300) NOT NULL,
+    Observacoes VARCHAR2(300),
+    FOREIGN KEY (ID_Consulta) REFERENCES Consulta(ID_Consulta)
+);
+
+CREATE TABLE Auditoria_Odontoprev (
+    ID_AUDITORIA NUMBER PRIMARY KEY,
+    NOME_TABELA VARCHAR2(50),
+    ID_REGISTRO NUMBER,
+    TIPO_OPERACAO VARCHAR2(10),
+    DATA_HORA TIMESTAMP,
+    USUARIO VARCHAR2(50),
+    DADOS_ANTIGOS VARCHAR2(4000),
+    DADOS_NOVOS VARCHAR2(4000)
+);
+
+-- Create Project Sequences
+CREATE SEQUENCE seq_paciente START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_dentista START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_consulta START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_historico START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE seq_auditoria START WITH 1 INCREMENT BY 1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE Pkg_Fun_Auxiliares AS
+
+    -- Funções Auxiliares de Validação
+    FUNCTION Is_Null_Or_Empty(value IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION Valida_CPF(cpf IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION Valida_Telefone(telefone IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION Valida_Carteirinha(carteirinha IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION Valida_Data_Nascimento(data_nascimento IN DATE) RETURN BOOLEAN;
+    FUNCTION Valida_CRO(cro IN VARCHAR2) RETURN BOOLEAN;
+    FUNCTION Valida_Status_Consulta(status IN VARCHAR2) RETURN BOOLEAN;
+
+END Pkg_Fun_Auxiliares;
+/
+
+CREATE OR REPLACE PACKAGE BODY Pkg_Fun_Auxiliares AS
+
+    -- Função para verificar se um campo é nulo ou vazio
+    FUNCTION Is_Null_Or_Empty(value IN VARCHAR2) RETURN BOOLEAN IS
+    BEGIN
+        RETURN (value IS NULL OR TRIM(value) = '');
+    END Is_Null_Or_Empty;
+    
+    -- Função para validar CPF
+    FUNCTION Valida_CPF(cpf IN VARCHAR2) RETURN BOOLEAN IS
+    BEGIN
+        RETURN REGEXP_LIKE(cpf, '([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})');
+    END Valida_CPF;
+    
+    -- Função para validar Telefone
+    FUNCTION Valida_Telefone(telefone IN VARCHAR2) RETURN BOOLEAN IS
+    BEGIN
+        RETURN REGEXP_LIKE(telefone, '^\(\d{2}\)\s\d{4,5}-\d{4}$');
+    END Valida_Telefone;
+    
+    -- Função para validar Carteirinha
+    FUNCTION Valida_Carteirinha(carteirinha IN VARCHAR2) RETURN BOOLEAN IS
+    BEGIN
+        RETURN LENGTH(carteirinha) = 5;
+    END Valida_Carteirinha;
+
+    -- Função para validar Data de Nascimento
+    FUNCTION Valida_Data_Nascimento(data_nascimento IN DATE) RETURN BOOLEAN IS
+    BEGIN
+        RETURN (data_nascimento < SYSDATE);
+    END Valida_Data_Nascimento;
+    
+    -- Função para validar CRO
+    FUNCTION Valida_CRO(cro IN VARCHAR2) RETURN BOOLEAN IS
+    BEGIN
+        RETURN REGEXP_LIKE(cro, '^CRO-[0-9]{5}$');
+    END Valida_CRO;
+    
+    -- Função para validar Status da Consulta
+    FUNCTION Valida_Status_Consulta(status IN VARCHAR2) RETURN BOOLEAN IS
+    BEGIN
+        RETURN status IN ('AGENDADA', 'CONCLUIDA', 'CANCELADA');
+    END Valida_Status_Consulta;
+
+END Pkg_Fun_Auxiliares;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PACKAGE Pkg_Fun_Validacao_Odontoprev AS
+
+    -- Validação de Tabelas
+    FUNCTION Valida_Paciente_Insert(
+        p_Nome Paciente.Nome%TYPE,
+        p_Data_Nascimento Paciente.Data_Nascimento%TYPE,
+        p_CPF Paciente.CPF%TYPE,
+        p_Endereco Paciente.Endereco%TYPE,
+        p_Telefone Paciente.Telefone%TYPE,
+        p_Carteirinha Paciente.Carteirinha%TYPE
+    ) RETURN BOOLEAN;
+    
+    FUNCTION Valida_Paciente_Update(
+        p_ID_Paciente Paciente.ID_Paciente%TYPE,
+        p_Nome Paciente.Nome%TYPE DEFAULT NULL,
+        p_Data_Nascimento Paciente.Data_Nascimento%TYPE DEFAULT NULL,
+        p_CPF Paciente.CPF%TYPE DEFAULT NULL,
+        p_Endereco Paciente.Endereco%TYPE DEFAULT NULL,
+        p_Telefone Paciente.Telefone%TYPE DEFAULT NULL,
+        p_Carteirinha Paciente.Carteirinha%TYPE DEFAULT NULL
+    ) RETURN BOOLEAN;
+    
+    FUNCTION Valida_Dentista_Insert(
+        p_Nome Dentista.Nome%TYPE,
+        p_CRO Dentista.CRO%TYPE,
+        p_Especialidade Dentista.Especialidade%TYPE,
+        p_Telefone Dentista.Telefone%TYPE
+    ) RETURN BOOLEAN;
+    
+    FUNCTION Valida_Dentista_Update(
+        p_ID_Dentista Dentista.ID_Dentista%TYPE,
+        p_Nome Dentista.Nome%TYPE DEFAULT NULL,
+        p_CRO Dentista.CRO%TYPE DEFAULT NULL,
+        p_Especialidade Dentista.Especialidade%TYPE DEFAULT NULL,
+        p_Telefone Dentista.Telefone%TYPE DEFAULT NULL
+    ) RETURN BOOLEAN;
+    
+    FUNCTION Valida_Consulta_Insert (
+        p_Data_Consulta Consulta.Data_Consulta%TYPE,
+        p_ID_Paciente Consulta.ID_Paciente%TYPE,
+        p_ID_Dentista Consulta.ID_Dentista%TYPE,
+        p_Status Consulta.Status%TYPE
+    ) RETURN BOOLEAN;
+    
+    FUNCTION Valida_Consulta_Update (
+        p_ID_Consulta Consulta.ID_Consulta%TYPE,
+        p_Data_Consulta Consulta.Data_Consulta%TYPE DEFAULT NULL,
+        p_ID_Paciente Consulta.ID_Paciente%TYPE DEFAULT NULL,
+        p_ID_Dentista Consulta.ID_Dentista%TYPE DEFAULT NULL,
+        p_Status Consulta.Status%TYPE DEFAULT NULL
+    ) RETURN BOOLEAN;
+    
+    FUNCTION Valida_Historico_Consulta_Insert(
+        p_ID_Consulta Historico_Consulta.ID_Consulta%TYPE,
+        p_Data_Atendimento Historico_Consulta.Data_Atendimento%Type,
+        p_Motivo_Consulta Historico_Consulta.Motivo_Consulta%Type
+    ) RETURN BOOLEAN;
+    
+    FUNCTION Valida_Historico_Consulta_Update(
+        p_ID_Historico Historico_Consulta.ID_Historico%TYPE,
+        p_ID_Consulta Historico_Consulta.ID_Consulta%TYPE DEFAULT NULL,
+        p_Data_Atendimento Historico_Consulta.Data_Atendimento%Type DEFAULT NULL,
+        p_Motivo_Consulta Historico_Consulta.Motivo_Consulta%Type DEFAULT NULL
+    )RETURN BOOLEAN;
+END Pkg_Fun_Validacao_Odontoprev;
+/
+
+CREATE OR REPLACE PACKAGE BODY Pkg_Fun_Validacao_Odontoprev AS
+
+    -- Funções para validar Paciente:
+    
+    -- Função para validar todos os dados do paciente durante a inserção
+    FUNCTION Valida_Paciente_Insert(
+        p_Nome Paciente.Nome%TYPE,
+        p_Data_Nascimento Paciente.Data_Nascimento%TYPE,
+        p_CPF Paciente.CPF%TYPE,
+        p_Endereco Paciente.Endereco%TYPE,
+        p_Telefone Paciente.Telefone%TYPE,
+        p_Carteirinha Paciente.Carteirinha%TYPE
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        -- Validação do Nome
+        IF Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Nome) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Nome é obrigatório.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do Endereço
+        IF Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Endereco) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Endereço é obrigatório.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do Telefone
+        IF NOT Pkg_Fun_Auxiliares.Valida_Telefone(p_Telefone) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Telefone inválido. Formato esperado: (xx) xxxxx-xxxx.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do CPF
+        IF NOT Pkg_Fun_Auxiliares.Valida_CPF(p_CPF) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: CPF inválido! CPF deve ter 14 caracteres (incluindo pontos e hífen).');
+            RETURN FALSE;
+        END IF;
+
+        -- Verifica se o CPF já existe na tabela Paciente
+        SELECT COUNT(*) INTO v_count
+        FROM Paciente
+        WHERE CPF = p_CPF;
+        IF v_count > 0 THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: CPF já consta na tabela!');
+            RETURN FALSE; 
+        END IF;
+
+        -- Validação da Data de Nascimento
+        IF NOT Pkg_Fun_Auxiliares.Valida_Data_Nascimento(p_Data_Nascimento) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Data de Nascimento não pode ser futura.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação da Carteirinha
+        IF NOT Pkg_Fun_Auxiliares.Valida_Carteirinha(p_Carteirinha) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Carteirinha inválida! Deve ter 5 dígitos.');
+            RETURN FALSE;
+        END IF;
+
+        -- Verifica se a Carteirinha já existe na tabela Paciente
+        SELECT COUNT(*) INTO v_count
+        FROM Paciente
+        WHERE Carteirinha = p_Carteirinha;
+        IF v_count > 0 THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Carteirinha já consta na tabela!');
+            RETURN FALSE; 
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE('Paciente válido para inserção.');
+        RETURN TRUE;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+            RETURN FALSE;
+    END Valida_Paciente_Insert;
+    
+    -- Função para validar dados do paciente durante a atualização
+    FUNCTION Valida_Paciente_Update(
+        p_ID_Paciente Paciente.ID_Paciente%TYPE,
+        p_Nome Paciente.Nome%TYPE DEFAULT NULL,
+        p_Data_Nascimento Paciente.Data_Nascimento%TYPE DEFAULT NULL,
+        p_CPF Paciente.CPF%TYPE DEFAULT NULL,
+        p_Endereco Paciente.Endereco%TYPE DEFAULT NULL,
+        p_Telefone Paciente.Telefone%TYPE DEFAULT NULL,
+        p_Carteirinha Paciente.Carteirinha%TYPE DEFAULT NULL
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_count
+            FROM Paciente
+            WHERE ID_Paciente = p_ID_Paciente;
+        IF v_count < 1 THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Paciente não consta na tabela!');
+            RETURN FALSE; 
+        END IF;
+        
+        -- Validação do ID_Paciente
+        IF p_ID_Paciente IS NULL THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: ID do paciente é obrigatório para atualização.');
+            RETURN FALSE;
+        END IF;
+        
+        -- Validação do Nome (se fornecido)
+        IF p_Nome IS NOT NULL AND Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Nome) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Nome não pode ser vazio.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do Endereço (se fornecido)
+        IF p_Endereco IS NOT NULL AND Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Endereco) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Endereço não pode ser vazio.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do Telefone (se fornecido)
+        IF p_Telefone IS NOT NULL AND NOT Pkg_Fun_Auxiliares.Valida_Telefone(p_Telefone) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Telefone inválido. Formato esperado: (xx) xxxxx-xxxx.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do CPF (se fornecido)
+        IF p_CPF IS NOT NULL AND NOT Pkg_Fun_Auxiliares.Valida_CPF(p_CPF) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: CPF inválido! CPF deve ter 14 caracteres (incluindo pontos e hífen).');
+            RETURN FALSE;
+        END IF;
+
+        -- Verifica se o CPF já existe na tabela (exceto para o paciente atual)
+        IF p_CPF IS NOT NULL THEN
+            SELECT COUNT(*) INTO v_count
+            FROM Paciente
+            WHERE CPF = p_CPF AND ID_Paciente != p_ID_Paciente;
+            IF v_count > 0 THEN
+                DBMS_OUTPUT.PUT_LINE('Erro: CPF já consta na tabela!');
+                RETURN FALSE; 
+            END IF;
+        END IF;
+
+        -- Validação da Data de Nascimento (se fornecida)
+        IF p_Data_Nascimento IS NOT NULL AND NOT Pkg_Fun_Auxiliares.Valida_Data_Nascimento(p_Data_Nascimento) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Data de Nascimento não pode ser futura.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação da Carteirinha (se fornecida)
+            IF p_Carteirinha IS NOT NULL AND NOT Pkg_Fun_Auxiliares.Valida_Carteirinha(p_Carteirinha) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Carteirinha inválida! Deve ter 5 dígitos.');
+            RETURN FALSE;
+        END IF;
+    
+        -- Verifica se a Carterinha já existe na tabela (exceto para o paciente atual)
+        IF p_Carteirinha IS NOT NULL THEN
+            SELECT COUNT(*) INTO v_count
+            FROM Paciente
+            WHERE Carteirinha = p_Carteirinha AND ID_Paciente != p_ID_Paciente;
+            IF v_count > 0 THEN
+                DBMS_OUTPUT.PUT_LINE('Erro: Carterinha já consta na tabela!');
+                RETURN FALSE;
+            END IF;
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE('Dados válidos para atualização.');
+        RETURN TRUE;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+            RETURN FALSE;
+    END Valida_Paciente_Update;
+    
+    
+    -- Funções para validar Dentista :
+    
+    -- Função para validar todos os dados do dentista durante a inserção
+    FUNCTION Valida_Dentista_Insert(
+        p_Nome Dentista.Nome%TYPE,
+        p_CRO Dentista.CRO%TYPE,
+        p_Especialidade Dentista.Especialidade%TYPE,
+        p_Telefone Dentista.Telefone%TYPE
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        -- Validação do Nome
+        IF Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Nome) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Nome é obrigatório.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do CRO
+        IF NOT Pkg_Fun_Auxiliares.Valida_CRO(p_CRO) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: CRO inválido. Formato esperado: CRO-XXXXX.');
+            RETURN FALSE;
+        END IF;
+
+        -- Verifica se o CRO já existe na tabela Dentista
+        SELECT COUNT(*) INTO v_count
+        FROM Dentista
+        WHERE CRO = p_CRO;
+        IF v_count > 0 THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: CRO já consta na tabela!');
+            RETURN FALSE; 
+        END IF;
+
+        -- Validação da Especialidade
+        IF Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Especialidade) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Especialidade é obrigatória.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do Telefone
+        IF NOT Pkg_Fun_Auxiliares.Valida_Telefone(p_Telefone) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Telefone inválido. Formato esperado: (11) 12345-6789 ou (11) 1234-5678.');
+            RETURN FALSE;
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE('Dentista válido para inserção.');
+        RETURN TRUE;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+            RETURN FALSE;
+    END Valida_Dentista_Insert;
+
+    -- Função para validar todos os dados do paciente durante a atualização
+    FUNCTION Valida_Dentista_Update(
+        p_ID_Dentista Dentista.ID_Dentista%TYPE,
+        p_Nome Dentista.Nome%TYPE DEFAULT NULL,
+        p_CRO Dentista.CRO%TYPE DEFAULT NULL,
+        p_Especialidade Dentista.Especialidade%TYPE DEFAULT NULL,
+        p_Telefone Dentista.Telefone%TYPE DEFAULT NULL
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        -- Verifica se o dentista existe
+        SELECT COUNT(*) INTO v_count
+        FROM Dentista
+        WHERE ID_Dentista = p_ID_Dentista;
+        IF v_count < 1 THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Dentista não consta na tabela!');
+            RETURN FALSE; 
+        END IF;
+
+        -- Validação do ID_Dentista
+        IF p_ID_Dentista IS NULL THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: ID do dentista é obrigatório para atualização.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do Nome (opcional)
+        IF p_Nome IS NOT NULL AND Pkg_Fun_Auxiliares.Is_Null_OR_Empty(p_Nome) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Nome não pode ser vazio se fornecido.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do CRO (opcional)
+        IF p_CRO IS NOT NULL THEN
+            IF NOT Pkg_Fun_Auxiliares.Valida_CRO(p_CRO) THEN
+                DBMS_OUTPUT.PUT_LINE('Erro: CRO inválido. Formato esperado: CRO-XXXXX');
+                RETURN FALSE;
+            END IF;
+
+            -- Verifica se o CRO já existe na tabela Dentista
+            SELECT COUNT(*) INTO v_count
+            FROM Dentista
+            WHERE CRO = p_CRO AND ID_Dentista != p_ID_Dentista; 
+            IF v_count > 0 THEN
+                DBMS_OUTPUT.PUT_LINE('Erro: CRO já consta na tabela!');
+                RETURN FALSE; 
+            END IF;
+        END IF;
+
+        -- Validação da Especialidade (opcional)
+        IF p_Especialidade IS NOT NULL AND Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Especialidade) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Especialidade não pode ser vazia se fornecida.');
+            RETURN FALSE;
+        END IF;
+
+        -- Validação do Telefone (opcional)
+        IF p_Telefone IS NOT NULL THEN
+            IF NOT Pkg_Fun_Auxiliares.Valida_Telefone(p_Telefone) THEN
+                DBMS_OUTPUT.PUT_LINE('Erro: Telefone inválido. Formato esperado: (11) 12345-6789 ou (11) 1234-5678.');
+                RETURN FALSE;
+            END IF;
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE('Dentista válido para atualização.');
+        RETURN TRUE;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+            RETURN FALSE;
+    END Valida_Dentista_Update;
+    
+    
+    -- Funções para validar Consulta
+    
+    -- Função para validar dados de inserção na tabela Consulta
+    FUNCTION Valida_Consulta_Insert (
+        p_Data_Consulta Consulta.Data_Consulta%TYPE,
+        p_ID_Paciente Consulta.ID_Paciente%TYPE,
+        p_ID_Dentista Consulta.ID_Dentista%TYPE,
+        p_Status Consulta.Status%TYPE
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        -- Verificar se o Paciente existe
+        SELECT COUNT(*) INTO v_count
+        FROM Paciente
+        WHERE ID_Paciente = p_ID_Paciente;
+        IF v_count = 0 OR p_ID_Paciente IS NULL THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Paciente não encontrado.');
+            RETURN FALSE;
+        END IF;
+
+        -- Verificar se o Dentista existe
+        SELECT COUNT(*) INTO v_count
+        FROM Dentista
+        WHERE ID_Dentista = p_ID_Dentista;
+        IF v_count = 0 OR p_ID_Dentista IS NULL THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Dentista não encontrado.');
+            RETURN FALSE;
+        END IF;
+
+        -- Verificar se a Data_Consulta não é nula
+        IF Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Data_Consulta) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Data da Consulta não pode ser nula.');
+            RETURN FALSE;
+        END IF;
+
+        -- Verificar se o Status é válido (valores permitidos: 'AGENDADA', 'CONCLUIDA', 'CANCELADA')
+        IF NOT Pkg_Fun_Auxiliares.Valida_Status_Consulta(p_Status) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Status inválido. Use: AGENDADA, CONCLUIDA ou CANCELADA.');
+            RETURN FALSE;
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE('Consulta válida para inserção.');
+        RETURN TRUE;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+            RETURN FALSE;
+    END Valida_Consulta_Insert;
+
+    -- Função para validar dados de atualização na tabela Consulta
+    FUNCTION Valida_Consulta_Update (
+        p_ID_Consulta Consulta.ID_Consulta%TYPE,
+        p_Data_Consulta Consulta.Data_Consulta%TYPE DEFAULT NULL,
+        p_ID_Paciente Consulta.ID_Paciente%TYPE DEFAULT NULL,
+        p_ID_Dentista Consulta.ID_Dentista%TYPE DEFAULT NULL,
+        p_Status Consulta.Status%TYPE DEFAULT NULL
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_count
+        FROM Consulta
+        WHERE ID_Consulta = p_ID_Consulta;
+        IF v_count < 0 OR p_ID_Consulta IS NULL THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Consulta não consta na tabela!');
+            RETURN FALSE; 
+        END IF;
+    
+        IF p_ID_Paciente IS NOT NULL THEN
+            SELECT COUNT(*) INTO v_count
+            FROM Paciente
+            WHERE ID_Paciente = p_ID_Paciente;
+            IF v_count = 0 THEN
+                DBMS_OUTPUT.PUT_LINE('Erro: Paciente não encontrado.');
+                RETURN FALSE;
+            END IF;
+        END IF;
+    
+        IF p_ID_Dentista IS NOT NULL THEN
+            SELECT COUNT(*) INTO v_count
+            FROM Dentista
+            WHERE ID_Dentista = p_ID_Dentista;
+            IF v_count = 0 THEN
+                DBMS_OUTPUT.PUT_LINE('Erro: Dentista não encontrado.');
+                RETURN FALSE;
+            END IF;
+        END IF;
+    
+        IF p_Data_Consulta IS NOT NULL AND Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Data_Consulta) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Data da Consulta não pode ser vazia se fornecida.');
+            RETURN FALSE;
+        END IF;
+    
+        IF p_Status IS NOT NULL AND NOT Pkg_Fun_Auxiliares.Valida_Status_Consulta(p_Status) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Status inválido. Use: AGENDADA, CONCLUIDA ou CANCELADA.');
+            RETURN FALSE;
+        END IF;
+    
+        DBMS_OUTPUT.PUT_LINE('Consulta válida para atualização.');
+        RETURN TRUE;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+            RETURN FALSE;
+    END Valida_Consulta_Update;
+    
+    
+    -- Funções para validar Histórico de Consulta (motivo da consulta e data de atendimento da consulta)
+
+    -- Função para validar dados de inserção da tabela Historico_Consulta
+    FUNCTION Valida_Historico_Consulta_Insert(
+        p_ID_Consulta Historico_Consulta.ID_Consulta%TYPE,
+        p_Data_Atendimento Historico_Consulta.Data_Atendimento%Type,
+        p_Motivo_Consulta Historico_Consulta.Motivo_Consulta%Type
+    ) RETURN BOOLEAN IS
+        v_Count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_Count
+        FROM Consulta
+        WHERE ID_Consulta = p_ID_Consulta;
+        IF v_Count = 0 OR p_ID_Consulta IS NULL THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Consulta não encontrada.');
+            RETURN FALSE;
+        END IF;
+
+        IF Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Data_Atendimento) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Data do Atendimento não pode ser nula.');
+            RETURN FALSE;
+        END IF;
+    
+        IF Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Motivo_Consulta) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Motivo da consulta não pode ser nula.');
+            RETURN FALSE;
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE('Histórico de consulta válido para inserção.');
+        RETURN TRUE;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+            RETURN FALSE;
+    END Valida_Historico_Consulta_Insert;
+
+    -- Função para validar dados de atualização na tabela Historico_Consulta
+    FUNCTION Valida_Historico_Consulta_Update(
+        p_ID_Historico Historico_Consulta.ID_Historico%TYPE,
+        p_ID_Consulta Historico_Consulta.ID_Consulta%TYPE DEFAULT NULL,
+        p_Data_Atendimento Historico_Consulta.Data_Atendimento%Type DEFAULT NULL,
+        p_Motivo_Consulta Historico_Consulta.Motivo_Consulta%Type DEFAULT NULL
+    )RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        -- Verifica se a ID_Historico existe
+        SELECT COUNT(*) INTO v_Count
+        FROM Historico_Consulta
+        WHERE ID_Historico = p_ID_Historico;
+    
+        IF v_Count = 0 OR p_ID_Historico IS NULL THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Historico não consta na tabela!');
+            RETURN FALSE;
+        END IF;
+
+        -- Verifica se a consulta existe na tabela Consulta, se fornecida
+        IF p_ID_Consulta IS NOT NULL THEN
+            SELECT COUNT(*) INTO v_Count
+            FROM Consulta
+            WHERE ID_Consulta = p_ID_Consulta;
+
+            IF v_Count = 0 THEN
+                RETURN FALSE;
+                DBMS_OUTPUT.PUT_LINE('Erro: Consulta não consta na tabela!');
+            END IF;
+        END IF;
+    
+        IF p_Data_Atendimento IS NOT NULL AND Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Data_Atendimento) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Data do Atendimento não pode ser vazia se fornecida.');
+            RETURN FALSE;
+        END IF;
+
+        -- Se algum dos campos obrigatórios de atualização estiver preenchido, valida
+        IF p_Motivo_Consulta IS NOT NULL AND Pkg_Fun_Auxiliares.Is_Null_Or_Empty(p_Motivo_Consulta) THEN
+            DBMS_OUTPUT.PUT_LINE('Erro: Motivo da Consulta não pode ser vazia se fornecida.');
+            RETURN FALSE;
+        END IF;
+
+        DBMS_OUTPUT.PUT_LINE('Histórico de consulta válido para atualização');
+        RETURN TRUE;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro inesperado: ' || SQLERRM);
+            RETURN FALSE;
+    END Valida_Historico_Consulta_Update;
+        
+END Pkg_Fun_Validacao_Odontoprev;
+/
+
+
+
+
+
+
+
+
+
+
+set SERVEROUTPUT on;
+
+CREATE OR REPLACE PACKAGE Pkg_Auditoria_Odontoprev AS
+    PROCEDURE registrar_auditoria(
+        p_nome_tabela    VARCHAR2,
+        p_id_registro    NUMBER,
+        p_tipo_operacao  VARCHAR2,
+        p_dados_antigos  VARCHAR2,
+        p_dados_novos    VARCHAR2
+    );
+END Pkg_Auditoria_Odontoprev;
+/
+
+CREATE OR REPLACE PACKAGE BODY Pkg_Auditoria_Odontoprev AS
+    PROCEDURE registrar_auditoria(
+        p_nome_tabela    VARCHAR2,
+        p_id_registro    NUMBER,
+        p_tipo_operacao  VARCHAR2,
+        p_dados_antigos  VARCHAR2,
+        p_dados_novos    VARCHAR2
+    ) IS
+    BEGIN
+        INSERT INTO Auditoria_Odontoprev (
+            ID_AUDITORIA, NOME_TABELA, ID_REGISTRO, 
+            TIPO_OPERACAO, DATA_HORA, USUARIO, 
+            DADOS_ANTIGOS, DADOS_NOVOS
+        )
+        VALUES (
+            SEQ_AUDITORIA.NEXTVAL,
+            p_nome_tabela,
+            p_id_registro,
+            p_tipo_operacao,
+            SYSTIMESTAMP,
+            USER,
+            p_dados_antigos,
+            p_dados_novos
+        );
+    END registrar_auditoria;
+END Pkg_Auditoria_Odontoprev;
+/
+
+
+
+
+
+CREATE OR REPLACE PACKAGE Pkg_Procedures_CRUD_Odontoprev AS
+
+  -- Procedures para Paciente
+  PROCEDURE Insert_Paciente(
+    p_Nome Paciente.Nome%TYPE,
+    p_Data_Nascimento Paciente.Data_Nascimento%TYPE,
+    p_CPF Paciente.CPF%TYPE,
+    p_Endereco Paciente.Endereco%TYPE,
+    p_Telefone Paciente.Telefone%TYPE,
+    p_Carteirinha Paciente.Carteirinha%TYPE
+  );
+
+  PROCEDURE Update_Paciente(
+    p_ID_Paciente Paciente.ID_Paciente%TYPE,
+    p_Nome Paciente.Nome%TYPE DEFAULT NULL,
+    p_Data_Nascimento Paciente.Data_Nascimento%TYPE DEFAULT NULL,
+    p_CPF Paciente.CPF%TYPE DEFAULT NULL,
+    p_Endereco Paciente.Endereco%TYPE DEFAULT NULL,
+    p_Telefone Paciente.Telefone%TYPE DEFAULT NULL,
+    p_Carteirinha Paciente.Carteirinha%TYPE DEFAULT NULL
+  );
+
+  PROCEDURE Delete_Paciente(p_ID_Paciente Paciente.ID_Paciente%TYPE);
+
+  -- Procedures para Dentista
+  PROCEDURE Insert_Dentista(
+    p_Nome Dentista.Nome%TYPE,
+    p_CRO Dentista.CRO%TYPE,
+    p_Especialidade Dentista.Especialidade%TYPE,
+    p_Telefone Dentista.Telefone%TYPE
+  );
+
+  PROCEDURE Update_Dentista(
+    p_ID_Dentista Dentista.ID_Dentista%TYPE,
+    p_Nome Dentista.Nome%TYPE DEFAULT NULL,
+    p_CRO Dentista.CRO%TYPE DEFAULT NULL,
+    p_Especialidade Dentista.Especialidade%TYPE DEFAULT NULL,
+    p_Telefone Dentista.Telefone%TYPE DEFAULT NULL
+  );
+
+  PROCEDURE Delete_Dentista(p_ID_Dentista Dentista.ID_Dentista%TYPE);
+
+  -- Procedures para Consulta
+  PROCEDURE Insert_Consulta(
+    p_Data_Consulta Consulta.Data_Consulta%TYPE,
+    p_ID_Paciente Consulta.ID_Paciente%TYPE,
+    p_ID_Dentista Consulta.ID_Dentista%TYPE,
+    p_Status Consulta.Status%TYPE
+  );
+
+  PROCEDURE Update_Consulta(
+    p_ID_Consulta Consulta.ID_Consulta%TYPE,
+    p_Data_Consulta Consulta.Data_Consulta%TYPE DEFAULT NULL,
+    p_ID_Paciente Consulta.ID_Paciente%TYPE DEFAULT NULL,
+    p_ID_Dentista Consulta.ID_Dentista%TYPE DEFAULT NULL,
+    p_Status Consulta.Status%TYPE DEFAULT NULL
+  );
+
+  PROCEDURE Delete_Consulta(p_ID_Consulta Consulta.ID_Consulta%TYPE);
+
+  -- Procedures para Histórico de Consulta
+  PROCEDURE Insert_Historico_Consulta(
+    p_ID_Consulta Historico_Consulta.ID_Consulta%TYPE,
+    p_Data_Atendimento Historico_Consulta.Data_Atendimento%TYPE,
+    p_Motivo_Consulta Historico_Consulta.Motivo_Consulta%TYPE,
+    p_Observacoes Historico_Consulta.Observacoes%TYPE DEFAULT NULL
+  );
+
+  PROCEDURE Update_Historico_Consulta(
+    p_ID_Historico Historico_Consulta.ID_Historico%TYPE,
+    p_ID_Consulta Historico_Consulta.ID_Consulta%TYPE DEFAULT NULL,
+    p_Data_Atendimento Historico_Consulta.Data_Atendimento%TYPE DEFAULT NULL,
+    p_Motivo_Consulta Historico_Consulta.Motivo_Consulta%TYPE DEFAULT NULL,
+    p_Observacoes Historico_Consulta.Observacoes%TYPE DEFAULT NULL
+  );
+
+  PROCEDURE Delete_Historico_Consulta(p_ID_Historico Historico_Consulta.ID_Historico%TYPE);
+
+END Pkg_Procedures_CRUD_Odontoprev;
+/
+
+CREATE OR REPLACE PACKAGE BODY Pkg_Procedures_CRUD_Odontoprev AS
+    
+    -- Paciente
+    
+    -- Procedure para Inserir Paciente
+    PROCEDURE Insert_Paciente(
+        p_Nome Paciente.Nome%TYPE,
+        p_Data_Nascimento Paciente.Data_Nascimento%TYPE,
+        p_CPF Paciente.CPF%TYPE,
+        p_Endereco Paciente.Endereco%TYPE,
+        p_Telefone Paciente.Telefone%TYPE,
+        p_Carteirinha Paciente.Carteirinha%TYPE
+    ) IS    
+    BEGIN
+        -- Validar todos os dados do paciente
+        IF Pkg_Fun_Validacao_Odontoprev.Valida_Paciente_Insert(p_Nome, p_Data_Nascimento, p_CPF, p_Endereco, p_Telefone, p_Carteirinha) THEN
+            INSERT INTO Paciente (ID_Paciente, Nome, Data_Nascimento, CPF, Endereco, Telefone, Carteirinha)
+            VALUES (seq_paciente.NEXTVAL, p_Nome, p_Data_Nascimento, p_CPF, p_Endereco, p_Telefone, p_Carteirinha);
+            DBMS_OUTPUT.PUT_LINE('Paciente inserido com sucesso.');
+            COMMIT;
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Erro na validação dos dados de entrada.');
+        END IF;
+    EXCEPTION
+        WHEN OTHERS THEN
+            DBMS_OUTPUT.PUT_LINE('Erro ao inserir paciente: ' || SQLERRM);
+            ROLLBACK;
+    END Insert_Paciente;
+    
+    -- Procedure para Atualizar Paciente
+	PROCEDURE Update_Paciente(
+		p_ID_Paciente Paciente.ID_Paciente%TYPE,
+		p_Nome Paciente.Nome%TYPE DEFAULT NULL,
+		p_Data_Nascimento Paciente.Data_Nascimento%TYPE DEFAULT NULL,
+		p_CPF Paciente.CPF%TYPE DEFAULT NULL,
+		p_Endereco Paciente.Endereco%TYPE DEFAULT NULL,
+		p_Telefone Paciente.Telefone%TYPE DEFAULT NULL,
+		p_Carteirinha Paciente.Carteirinha%TYPE DEFAULT NULL
+	) IS
+	BEGIN
+		-- Validar dados do paciente
+		IF Pkg_Fun_Validacao_Odontoprev.Valida_Paciente_Update(p_ID_Paciente, p_Nome, p_Data_Nascimento, p_CPF, p_Endereco, p_Telefone, p_Carteirinha) THEN
+			UPDATE Paciente
+			SET 
+				Nome = COALESCE(p_Nome, Nome),
+				Data_Nascimento = COALESCE(p_Data_Nascimento, Data_Nascimento),
+				CPF = COALESCE(p_CPF, CPF),
+				Endereco = COALESCE(p_Endereco, Endereco),
+				Telefone = COALESCE(p_Telefone, Telefone),
+				Carteirinha = COALESCE(p_Carteirinha, Carteirinha)
+			WHERE ID_Paciente = p_ID_Paciente;
+			DBMS_OUTPUT.PUT_LINE('Paciente atualizado com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Erro na validação dos dados de entrada.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao atualizar paciente: ' || SQLERRM);
+			ROLLBACK;
+	END Update_Paciente;
+    
+    -- Procedure para Deletar Paciente
+	PROCEDURE Delete_Paciente(
+		p_ID_Paciente Paciente.ID_Paciente%TYPE
+	) IS
+	BEGIN
+		-- Deletar o paciente pelo ID
+		DELETE FROM Paciente
+		WHERE ID_Paciente = p_ID_Paciente;
+
+		-- Verificar se alguma linha foi deletada
+		IF SQL%ROWCOUNT > 0 THEN
+			DBMS_OUTPUT.PUT_LINE('Paciente deletado com sucesso.');
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Nenhum paciente encontrado com o ID fornecido.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao deletar o paciente: ' || SQLERRM);
+			ROLLBACK;
+	END Delete_Paciente;
+    
+    
+    -- Dentista
+    
+    -- Procedure para Inserir Dentista
+	PROCEDURE Insert_Dentista(
+		p_Nome Dentista.Nome%TYPE,
+		p_CRO Dentista.CRO%TYPE,
+		p_Especialidade Dentista.Especialidade%TYPE,
+		p_Telefone Dentista.Telefone%TYPE
+	) IS
+	BEGIN
+		-- Validação dos dados do Dentista
+		IF Pkg_Fun_Validacao_Odontoprev.Valida_Dentista_Insert(p_Nome, p_CRO, UPPER(p_Especialidade), p_Telefone) THEN
+			INSERT INTO Dentista (ID_Dentista, Nome, CRO, Especialidade, Telefone)
+			VALUES (seq_dentista.NEXTVAL, p_Nome, p_CRO, UPPER(p_Especialidade), p_Telefone);
+			
+			DBMS_OUTPUT.PUT_LINE('Dentista inserido com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Erro na validação dos dados de entrada para inserção de Dentista.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao inserir dentista: ' || SQLERRM);
+			ROLLBACK;
+	END Insert_Dentista;
+    
+    -- Procedure para Atualizar Dentista
+	PROCEDURE Update_Dentista(
+		p_ID_Dentista Dentista.ID_Dentista%TYPE,
+		p_Nome Dentista.Nome%TYPE DEFAULT NULL,
+		p_CRO Dentista.CRO%TYPE DEFAULT NULL,
+		p_Especialidade Dentista.Especialidade%TYPE DEFAULT NULL,
+		p_Telefone Dentista.Telefone%TYPE DEFAULT NULL
+	) IS
+	BEGIN
+		-- Validação dos dados do Dentista
+		IF Pkg_Fun_Validacao_Odontoprev.Valida_Dentista_Update(p_ID_Dentista, p_Nome, p_CRO, UPPER(p_Especialidade), p_Telefone) THEN
+			UPDATE Dentista
+			SET Nome = COALESCE(p_Nome, Nome),
+				CRO = COALESCE(p_CRO, CRO),
+				Especialidade = COALESCE(UPPER(p_Especialidade), Especialidade),
+				Telefone = COALESCE(p_Telefone, Telefone)
+			WHERE ID_Dentista = p_ID_Dentista;
+			DBMS_OUTPUT.PUT_LINE('Paciente atualizado com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Erro na validação dos dados de entrada para atualização de Dentista.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao atualizar dentista: ' || SQLERRM);
+			ROLLBACK;
+	END Update_Dentista;
+    
+    -- Procedure para Deletar Dentista
+	PROCEDURE Delete_Dentista(
+		p_ID_Dentista Dentista.ID_Dentista%TYPE
+	) IS
+	BEGIN
+		DELETE FROM Dentista WHERE ID_Dentista = p_ID_Dentista;
+
+		IF SQL%ROWCOUNT > 0 THEN
+			DBMS_OUTPUT.PUT_LINE('Dentista deletado com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Nenhum dentista encontrado com o ID fornecido.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao deletar dentista: ' || SQLERRM);
+			ROLLBACK;
+	END Delete_Dentista;
+    
+    
+    -- Consulta
+    
+	-- Procedure para Inserir Consulta
+	PROCEDURE Insert_Consulta(
+		p_Data_Consulta Consulta.Data_Consulta%TYPE,
+		p_ID_Paciente Consulta.ID_Paciente%TYPE,
+		p_ID_Dentista Consulta.ID_Dentista%TYPE,
+		p_Status Consulta.Status%TYPE
+	) IS
+	BEGIN
+		-- Validar informações da consulta com a função Valida_Consulta_Insert
+		IF Pkg_Fun_Validacao_Odontoprev.Valida_Consulta_Insert(p_Data_Consulta, p_ID_Paciente, p_ID_Dentista, UPPER(p_Status)) THEN
+			INSERT INTO Consulta (ID_Consulta, Data_Consulta, ID_Paciente, ID_Dentista, Status)
+			VALUES (seq_consulta.NEXTVAL, p_Data_Consulta, p_ID_Paciente, p_ID_Dentista, UPPER(p_Status));
+			COMMIT;
+			DBMS_OUTPUT.PUT_LINE('Consulta inserida com sucesso.');
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Erro na validação dos dados de entrada para a consulta.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao inserir consulta: ' || SQLERRM);
+			ROLLBACK;
+	END Insert_Consulta;
+    
+    -- Função para Atualizar Consulta
+	PROCEDURE Update_Consulta(
+		p_ID_Consulta Consulta.ID_Consulta%TYPE,
+		p_Data_Consulta Consulta.Data_Consulta%TYPE DEFAULT NULL,
+		p_ID_Paciente Consulta.ID_Paciente%TYPE DEFAULT NULL,
+		p_ID_Dentista Consulta.ID_Dentista%TYPE DEFAULT NULL,
+		p_Status Consulta.Status%TYPE DEFAULT NULL
+	) IS
+	BEGIN
+		-- Validação dos dados da consulta
+		IF Pkg_Fun_Validacao_Odontoprev.Valida_Consulta_Update(p_ID_Consulta, p_Data_Consulta, p_ID_Paciente, p_ID_Dentista, UPPER(p_Status)) THEN
+			UPDATE Consulta
+			SET Data_Consulta = COALESCE(p_Data_Consulta, Data_Consulta),
+				ID_Paciente = COALESCE(p_ID_Paciente, ID_Paciente),
+				ID_Dentista = COALESCE(p_ID_Dentista, ID_Dentista),
+				Status = COALESCE(UPPER(p_Status), Status)
+			WHERE ID_Consulta = p_ID_Consulta;
+			DBMS_OUTPUT.PUT_LINE('Consulta atualizada com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Erro na validação dos dados de entrada para atualização de Consulta.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao atualizar consulta: ' || SQLERRM);
+			ROLLBACK;
+	END Update_Consulta;
+    
+    -- Procedure para Deletar Consulta
+	PROCEDURE Delete_Consulta(
+		p_ID_Consulta Consulta.ID_Consulta%TYPE
+	) IS
+	BEGIN
+		DELETE FROM Consulta WHERE ID_Consulta = p_ID_Consulta;
+
+		IF SQL%ROWCOUNT > 0 THEN
+			DBMS_OUTPUT.PUT_LINE('Consulta deletada com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Nenhuma consulta encontrada com o ID fornecido.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao deletar consulta: ' || SQLERRM);
+			ROLLBACK;
+	END Delete_Consulta;
+    
+    
+    -- Historico de Consulta
+    
+    -- Procedure para Inserir Histórico de Consulta
+    PROCEDURE Insert_Historico_Consulta(
+		p_ID_Consulta Historico_Consulta.ID_Consulta%TYPE,
+		p_Data_Atendimento Historico_Consulta.Data_Atendimento%TYPE,
+		p_Motivo_Consulta Historico_Consulta.Motivo_Consulta%TYPE,
+		p_Observacoes Historico_Consulta.Observacoes%TYPE DEFAULT NULL
+	) IS
+	BEGIN
+		-- Validar dados da inserção
+		IF Pkg_Fun_Validacao_Odontoprev.Valida_Historico_Consulta_Insert(p_ID_Consulta, p_Data_Atendimento, p_Motivo_Consulta) THEN
+			INSERT INTO Historico_Consulta (ID_Historico, ID_Consulta, Data_Atendimento, Motivo_Consulta, Observacoes)
+			VALUES (seq_historico.NEXTVAL, p_ID_Consulta, p_Data_Atendimento, p_Motivo_Consulta, p_Observacoes);
+			
+			DBMS_OUTPUT.PUT_LINE('Histórico de consulta inserido com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Erro na validação dos dados de entrada para inserção de histórico de consulta.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao inserir histórico de consulta: ' || SQLERRM);
+			ROLLBACK;
+	END Insert_Historico_Consulta;
+    
+    -- Procedure para Atualizar Histórico de Consulta
+    PROCEDURE Update_Historico_Consulta(
+		p_ID_Historico Historico_Consulta.ID_Historico%TYPE,
+		p_ID_Consulta Historico_Consulta.ID_Consulta%TYPE DEFAULT NULL,
+		p_Data_Atendimento Historico_Consulta.Data_Atendimento%TYPE DEFAULT NULL,
+		p_Motivo_Consulta Historico_Consulta.Motivo_Consulta%TYPE DEFAULT NULL,
+		p_Observacoes Historico_Consulta.Observacoes%TYPE DEFAULT NULL
+	) IS
+	BEGIN
+		-- Validar dados da atualização
+		IF Pkg_Fun_Validacao_Odontoprev.Valida_Historico_Consulta_Update(p_ID_Historico, p_ID_Consulta, p_Data_Atendimento, p_Motivo_Consulta) THEN
+			UPDATE Historico_Consulta
+			SET 
+				ID_Consulta = COALESCE(p_ID_Consulta, ID_Consulta),
+				Data_Atendimento = COALESCE(p_Data_Atendimento, Data_Atendimento),
+				Motivo_Consulta = COALESCE(p_Motivo_Consulta, Motivo_Consulta),
+				Observacoes = COALESCE(p_Observacoes, Observacoes)
+			WHERE ID_Historico = p_ID_Historico;
+
+			DBMS_OUTPUT.PUT_LINE('Histórico de consulta atualizado com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Erro na validação dos dados de entrada para atualização de histórico de consulta.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao atualizar histórico de consulta: ' || SQLERRM);
+			ROLLBACK;
+	END Update_Historico_Consulta;
+    
+    -- Procedure para Deletar Histórico de Consulta
+    PROCEDURE Delete_Historico_Consulta(
+		p_ID_Historico Historico_Consulta.ID_Historico%TYPE
+	) IS
+	BEGIN
+		DELETE FROM Historico_Consulta WHERE ID_Historico = p_ID_Historico;
+
+		IF SQL%ROWCOUNT > 0 THEN
+			DBMS_OUTPUT.PUT_LINE('Historico de consulta deletada com sucesso.');
+			COMMIT;
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('Nenhum historico de consulta encontrada com o ID fornecido.');
+		END IF;
+	EXCEPTION
+		WHEN OTHERS THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao deletar historico de consulta: ' || SQLERRM);
+			ROLLBACK;
+	END Delete_Historico_Consulta;
+    
+END Pkg_Procedures_CRUD_Odontoprev;
+/
+
+
+
+
+
+CREATE OR REPLACE PACKAGE Pkg_Procedures_Relatorios_Odontoprev AS
+    PROCEDURE proc_relatorio_consultas;
+    PROCEDURE proc_relatorio_auditoria;
+END Pkg_Procedures_Relatorios_Odontoprev;
+/
+
+CREATE OR REPLACE PACKAGE BODY Pkg_Procedures_Relatorios_Odontoprev AS
+/*
+Procedure: proc_relatorio_consultas
+Reltório com dados de Consulta, Paciente, Dentista e (opcionalmente) o Histórico da Consulta.
+*/
+  PROCEDURE proc_relatorio_consultas IS
+    CURSOR c_relatorio IS
+      SELECT 
+        c.ID_Consulta,
+        TO_CHAR(c.Data_Consulta, 'DD/MM/YYYY HH24:MI:SS') AS Data_Consulta,
+        p.Nome AS Nome_Paciente,
+        UPPER(d.Nome) AS Nome_Dentista,  -- Função de tratamento: exibe o nome em caixa alta
+        c.Status,
+        NVL(hc.Motivo_Consulta, 'Sem Histórico') AS Motivo_Consulta,
+        -- Função de agregação: total de consultas realizadas pelo dentista
+        (SELECT COUNT(*) FROM Consulta cc WHERE cc.ID_Dentista = d.ID_Dentista) AS Total_Consultas_Dentista
+      FROM Consulta c
+        INNER JOIN Paciente p ON c.ID_Paciente = p.ID_Paciente       -- INNER JOIN
+        INNER JOIN Dentista d ON c.ID_Dentista = d.ID_Dentista          -- INNER JOIN
+        LEFT JOIN Historico_Consulta hc ON c.ID_Consulta = hc.ID_Consulta -- LEFT JOIN para histórico opcional
+      ORDER BY c.Data_Consulta;
+    
+    v_rel c_relatorio%ROWTYPE;
+  BEGIN
+    DBMS_OUTPUT.PUT_LINE('===== Relatório de Consultas =====');
+    FOR v_rel IN c_relatorio LOOP
+      DBMS_OUTPUT.PUT_LINE('Consulta: ' || v_rel.ID_Consulta || 
+                           ' | Data: ' || v_rel.Data_Consulta ||
+                           ' | Paciente: ' || v_rel.Nome_Paciente ||
+                           ' | Dentista: ' || v_rel.Nome_Dentista ||
+                           ' | Status: ' || v_rel.Status ||
+                           ' | Motivo: ' || v_rel.Motivo_Consulta ||
+                           ' | Total Consultas do Dentista: ' || v_rel.Total_Consultas_Dentista);
+    END LOOP;
+  EXCEPTION
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE('Erro no relatório de consultas: ' || SQLERRM);
+  END proc_relatorio_consultas;
+  
+/*
+Procedure: proc_relatorio_auditoria
+Relatório a partir da tabela de auditoria, exibindo dados detalhados e totalizando as operações agrupadas por tabela e tipo.
+*/
+  PROCEDURE proc_relatorio_auditoria IS
+    CURSOR c_auditoria IS
+      SELECT 
+        a.ID_AUDITORIA,
+        a.NOME_TABELA,
+        a.TIPO_OPERACAO,
+        TO_CHAR(a.DATA_HORA, 'DD/MM/YYYY HH24:MI:SS') AS Data_Hora,
+        a.USUARIO,
+        a.ID_REGISTRO,
+        NVL(p.Nome, 'N/A') AS Nome_Paciente,
+        -- Função de agregação analítica: total de operações por Tabela e Tipo
+        COUNT(*) OVER (PARTITION BY a.NOME_TABELA, a.TIPO_OPERACAO) AS Total_Operacoes
+      FROM Auditoria_Odontoprev a
+        LEFT JOIN Paciente p 
+          ON (a.NOME_TABELA = 'Paciente' AND a.ID_REGISTRO = p.ID_Paciente)
+      ORDER BY a.NOME_TABELA, a.TIPO_OPERACAO, a.DATA_HORA;
+    
+    v_aud c_auditoria%ROWTYPE;
+  BEGIN
+    DBMS_OUTPUT.PUT_LINE('===== Relatório de Auditoria =====');
+    FOR v_aud IN c_auditoria LOOP
+      DBMS_OUTPUT.PUT_LINE('ID Auditoria: ' || v_aud.ID_AUDITORIA ||
+                           ' | Tabela: ' || v_aud.NOME_TABELA ||
+                           ' | Operação: ' || v_aud.TIPO_OPERACAO ||
+                           ' | Data: ' || v_aud.Data_Hora ||
+                           ' | Usuário: ' || v_aud.USUARIO ||
+                           ' | ID Registro: ' || v_aud.ID_REGISTRO ||
+                           ' | Nome Paciente: ' || v_aud.Nome_Paciente ||
+                           ' | Total Operações: ' || v_aud.Total_Operacoes);
+    END LOOP;
+  EXCEPTION
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE('Erro no relatório de auditoria: ' || SQLERRM);
+  END proc_relatorio_auditoria;
+
+END Pkg_Procedures_Relatorios_Odontoprev;
+/
+
+set SERVEROUTPUT on;
+
+EXECUTE Pkg_Procedures_Relatorios_Odontoprev.proc_relatorio_consultas;
+EXECUTE Pkg_Procedures_Relatorios_Odontoprev.proc_relatorio_auditoria;
+
+
+
+
+
+
+-- Trigger auditoria paciente
+CREATE OR REPLACE TRIGGER trg_auditoria_paciente
+    AFTER INSERT OR UPDATE OR DELETE
+    ON Paciente
+    FOR EACH ROW
+DECLARE
+    v_dados_antigos VARCHAR2(4000);
+    v_dados_novos VARCHAR2(4000);
+    v_operacao VARCHAR2(10);
+    v_id_registro NUMBER;
+BEGIN
+    -- Determina o tipo de operação realizada (INSERT, UPDATE ou DELETE)
+    IF INSERTING THEN
+        v_id_registro := :NEW.ID_Paciente;
+        v_operacao := 'INSERT';
+        v_dados_novos := 'ID_Paciente: ' || :NEW.ID_Paciente || 
+                         ', Nome: ' || :NEW.Nome ||
+                         ', Data_Nascimento: ' || TO_CHAR(:NEW.Data_Nascimento, 'YYYY-MM-DD') ||
+                         ', CPF: ' || :NEW.CPF ||
+                         ', Endereco: ' || :NEW.Endereco ||
+                         ', Telefone: ' || :NEW.Telefone ||
+                         ', Carteirinha: ' || :NEW.Carteirinha;
+    ELSIF UPDATING THEN
+        v_id_registro := :OLD.ID_Paciente;
+        v_operacao := 'UPDATE';
+        v_dados_antigos := 'ID_Paciente: ' || :OLD.ID_Paciente || 
+                           ', Nome: ' || :OLD.Nome ||
+                           ', Data_Nascimento: ' || TO_CHAR(:OLD.Data_Nascimento, 'YYYY-MM-DD') ||
+                           ', CPF: ' || :OLD.CPF ||
+                           ', Endereco: ' || :OLD.Endereco ||
+                           ', Telefone: ' || :OLD.Telefone ||
+                           ', Carteirinha: ' || :OLD.Carteirinha;
+        
+        v_id_registro := :NEW.ID_Paciente;                           
+        v_dados_novos := 'ID_Paciente: ' || :NEW.ID_Paciente || 
+                         ', Nome: ' || :NEW.Nome ||
+                         ', Data_Nascimento: ' || TO_CHAR(:NEW.Data_Nascimento, 'YYYY-MM-DD') ||
+                         ', CPF: ' || :NEW.CPF ||
+                         ', Endereco: ' || :NEW.Endereco ||
+                         ', Telefone: ' || :NEW.Telefone ||
+                         ', Carteirinha: ' || :NEW.Carteirinha;
+    ELSIF DELETING THEN
+        v_id_registro := :OLD.ID_Paciente;
+        v_operacao := 'DELETE';
+        v_dados_antigos := 'ID_Paciente: ' || :OLD.ID_Paciente || 
+                           ', Nome: ' || :OLD.Nome ||
+                           ', Data_Nascimento: ' || TO_CHAR(:OLD.Data_Nascimento, 'YYYY-MM-DD') ||
+                           ', CPF: ' || :OLD.CPF ||
+                           ', Endereco: ' || :OLD.Endereco ||
+                           ', Telefone: ' || :OLD.Telefone ||
+                           ', Carteirinha: ' || :OLD.Carteirinha;
+    END IF;
+
+    -- Insere o registro na tabela de auditoria
+    INSERT INTO Auditoria_Odontoprev (ID_AUDITORIA, NOME_TABELA, ID_REGISTRO, TIPO_OPERACAO, DATA_HORA, USUARIO, DADOS_ANTIGOS, DADOS_NOVOS)
+    VALUES (SEQ_AUDITORIA.NEXTVAL, 'Paciente', v_id_registro, v_operacao, SYSTIMESTAMP, USER, v_dados_antigos, v_dados_novos);
+END;
+/
+
+-- Trigger auditoria dentista
+CREATE OR REPLACE TRIGGER trg_auditoria_dentista
+    AFTER INSERT OR UPDATE OR DELETE
+    ON Dentista
+    FOR EACH ROW
+DECLARE
+    v_dados_antigos VARCHAR2(4000);
+    v_dados_novos VARCHAR2(4000);
+    v_operacao VARCHAR2(10);
+    v_id_registro NUMBER;
+BEGIN
+    -- Determina o tipo de operação realizada (INSERT, UPDATE ou DELETE)
+    IF INSERTING THEN
+        v_id_registro := :NEW.ID_Dentista;
+        v_operacao := 'INSERT';
+        v_dados_novos := 'ID_Dentista: ' || :NEW.ID_Dentista || 
+                         ', Nome: ' || :NEW.Nome ||
+                         ', CRO: ' || :NEW.CRO ||
+                         ', Especialidade: ' || :NEW.Especialidade ||
+                         ', Telefone: ' || :NEW.Telefone;
+        ELSIF UPDATING THEN
+        v_id_registro := :OLD.ID_Dentista;
+        v_operacao := 'UPDATE';
+        v_dados_antigos := 'ID_Dentista: ' || :OLD.ID_Dentista || 
+                         ', Nome: ' || :OLD.Nome ||
+                         ', CRO: ' || :OLD.CRO ||
+                         ', Especialidade: ' || :OLD.Especialidade ||
+                         ', Telefone: ' || :OLD.Telefone;
+        
+        v_id_registro := :NEW.ID_Dentista;                           
+        v_dados_novos := 'ID_Dentista: ' || :NEW.ID_Dentista || 
+                         ', Nome: ' || :NEW.Nome ||
+                         ', CRO: ' || :NEW.CRO ||
+                         ', Especialidade: ' || :NEW.Especialidade ||
+                         ', Telefone: ' || :NEW.Telefone;
+    ELSIF DELETING THEN
+        v_id_registro := :OLD.ID_Dentista;
+        v_operacao := 'DELETE';
+        v_dados_antigos := 'ID_Dentista: ' || :OLD.ID_Dentista || 
+                         ', Nome: ' || :OLD.Nome ||
+                         ', CRO: ' || :OLD.CRO ||
+                         ', Especialidade: ' || :OLD.Especialidade ||
+                         ', Telefone: ' || :OLD.Telefone;
+    END IF;
+    
+    -- Insere o registro na tabela de auditoria
+    INSERT INTO Auditoria_Odontoprev (ID_AUDITORIA, NOME_TABELA, ID_REGISTRO, TIPO_OPERACAO, DATA_HORA, USUARIO, DADOS_ANTIGOS, DADOS_NOVOS)
+    VALUES (SEQ_AUDITORIA.NEXTVAL, 'Dentista', v_id_registro, v_operacao, SYSTIMESTAMP, USER, v_dados_antigos, v_dados_novos);
+END;
+/
+
+-- Trigger auditoria Consulta
+CREATE OR REPLACE TRIGGER trg_auditoria_consulta
+    AFTER INSERT OR UPDATE OR DELETE
+    ON Consulta
+    FOR EACH ROW
+DECLARE
+    v_dados_antigos VARCHAR2(4000);
+    v_dados_novos VARCHAR2(4000);
+    v_operacao VARCHAR2(10);
+    v_id_registro NUMBER;
+BEGIN
+    -- Determina o tipo de operação realizada (INSERT, UPDATE ou DELETE)
+    IF INSERTING THEN
+        v_id_registro := :NEW.ID_Consulta;
+        v_operacao := 'INSERT';
+        v_dados_novos := 'ID_Consulta: ' || :NEW.ID_Consulta || 
+                         ', Data_Consulta: ' || TO_CHAR(:NEW.Data_Consulta, 'YYYY-MM-DD HH:MI:SS') ||
+                         ', ID_Paciente: ' || :NEW.ID_Paciente ||
+                         ', ID_Dentista: ' || :NEW.ID_Dentista ||
+                         ', Status: ' || :NEW.Status;
+    ELSIF UPDATING THEN
+        v_id_registro := :OLD.ID_Consulta;
+        v_operacao := 'INSERT';
+        v_dados_antigos := 'ID_Consulta: ' || :OLD.ID_Consulta || 
+                         ', Data_Consulta: ' || TO_CHAR(:OLD.Data_Consulta, 'YYYY-MM-DD HH:MI:SS') ||
+                         ', ID_Paciente: ' || :OLD.ID_Paciente ||
+                         ', ID_Dentista: ' || :OLD.ID_Dentista ||
+                         ', Status: ' || :OLD.Status;
+        
+        v_id_registro := :NEW.ID_Consulta;                           
+        v_dados_novos := 'ID_Consulta: ' || :NEW.ID_Consulta || 
+                         ', Data_Consulta: ' || TO_CHAR(:NEW.Data_Consulta, 'YYYY-MM-DD HH:MI:SS') ||
+                         ', ID_Paciente: ' || :NEW.ID_Paciente ||
+                         ', ID_Dentista: ' || :NEW.ID_Dentista ||
+                         ', Status: ' || :NEW.Status;
+    ELSIF DELETING THEN
+        v_id_registro := :OLD.ID_Consulta;
+        v_operacao := 'INSERT';
+        v_dados_antigos := 'ID_Consulta: ' || :OLD.ID_Consulta || 
+                         ', Data_Consulta: ' || TO_CHAR(:OLD.Data_Consulta, 'YYYY-MM-DD HH:MI:SS') ||
+                         ', ID_Paciente: ' || :OLD.ID_Paciente ||
+                         ', ID_Dentista: ' || :OLD.ID_Dentista ||
+                         ', Status: ' || :OLD.Status;
+    END IF;
+
+    -- Insere o registro na tabela de auditoria
+    INSERT INTO Auditoria_Odontoprev (ID_AUDITORIA, NOME_TABELA, ID_REGISTRO, TIPO_OPERACAO, DATA_HORA, USUARIO, DADOS_ANTIGOS, DADOS_NOVOS)
+    VALUES (SEQ_AUDITORIA.NEXTVAL, 'Consulta', v_id_registro, v_operacao, SYSTIMESTAMP, USER, v_dados_antigos, v_dados_novos);
+END;
+/
+
+-- Trigger auditoria Histórico Consulta
+CREATE OR REPLACE TRIGGER trg_auditoria_historico
+    AFTER INSERT OR UPDATE OR DELETE
+    ON Historico_Consulta
+    FOR EACH ROW
+DECLARE
+    v_dados_antigos VARCHAR2(4000);
+    v_dados_novos VARCHAR2(4000);
+    v_operacao VARCHAR2(10);
+    v_id_registro NUMBER;
+BEGIN
+    -- Determina o tipo de operação realizada (INSERT, UPDATE ou DELETE)
+    IF INSERTING THEN
+        v_id_registro := :NEW.ID_Historico;
+        v_operacao := 'INSERT';
+        v_dados_novos := 'ID_Historico: ' || :NEW.ID_Historico ||
+                         ', ID_Consulta: ' || :NEW.ID_Consulta || 
+                         ', Data_Atendimento: ' || TO_CHAR(:NEW.Data_Atendimento, 'YYYY-MM-DD HH:MI:SS') ||
+                         ', Motivo_Consulta: ' || :NEW.Motivo_Consulta ||
+                         ', Observacoes: ' || :NEW.Observacoes;
+    ELSIF UPDATING THEN
+        v_id_registro := :OLD.ID_Historico;
+        v_operacao := 'INSERT';
+        v_dados_antigos := 'ID_Historico: ' || :OLD.ID_Historico ||
+                         ', ID_Consulta: ' || :OLD.ID_Consulta || 
+                         ', Data_Atendimento: ' || TO_CHAR(:OLD.Data_Atendimento, 'YYYY-MM-DD HH:MI:SS') ||
+                         ', Motivo_Consulta: ' || :OLD.Motivo_Consulta ||
+                         ', Observacoes: ' || :OLD.Observacoes;
+        
+        v_id_registro := :NEW.ID_Historico;                           
+        v_dados_novos := 'ID_Historico: ' || :NEW.ID_Historico ||
+                         ', ID_Consulta: ' || :NEW.ID_Consulta || 
+                         ', Data_Atendimento: ' || TO_CHAR(:NEW.Data_Atendimento, 'YYYY-MM-DD HH:MI:SS') ||
+                         ', Motivo_Consulta: ' || :NEW.Motivo_Consulta ||
+                         ', Observacoes: ' || :NEW.Observacoes;
+    ELSIF DELETING THEN
+        v_id_registro := :OLD.ID_Historico;
+        v_operacao := 'INSERT';
+        v_dados_antigos := 'ID_Historico: ' || :OLD.ID_Historico ||
+                         ', ID_Consulta: ' || :OLD.ID_Consulta || 
+                         ', Data_Atendimento: ' || TO_CHAR(:OLD.Data_Atendimento, 'YYYY-MM-DD HH:MI:SS') ||
+                         ', Motivo_Consulta: ' || :OLD.Motivo_Consulta ||
+                         ', Observacoes: ' || :OLD.Observacoes;
+    END IF;
+
+    -- Insere o registro na tabela de auditoria
+    INSERT INTO Auditoria_Odontoprev (ID_AUDITORIA, NOME_TABELA, ID_REGISTRO, TIPO_OPERACAO, DATA_HORA, USUARIO, DADOS_ANTIGOS, DADOS_NOVOS)
+    VALUES (SEQ_AUDITORIA.NEXTVAL, 'Historico_Consulta', v_id_registro, v_operacao, SYSTIMESTAMP, USER, v_dados_antigos, v_dados_novos);
+END;
+/
