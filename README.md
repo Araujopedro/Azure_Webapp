@@ -87,6 +87,6 @@ https://github.com/VitorOnofreRamos/Challenge_Odontoprev_API.git
 
 ---
 
-**Contribua com este projeto!**
+**LINK DO VIDEO**
 
-Sinta-se à vontade para abrir issues ou enviar pull requests. Toda ajuda é bem-vinda para tornar este projeto ainda mais eficiente e alinhado às necessidades do negócio.
+https://youtu.be/XCXg6H7XyDg
